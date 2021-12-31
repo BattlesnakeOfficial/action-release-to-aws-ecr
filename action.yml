@@ -42,7 +42,7 @@ runs:
     - name: Build docker image and push to AWS ECR
       if: ${{ github.event_name == 'release' }}
       env:
-        IMAGE_PATH: "${{ steps.ecr-login.outputs.registry }}/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}"
+        IMAGE_PATH: "${{ steps.ecr_login.outputs.registry }}/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}"
         IMAGE_TAG: "${{ github.event.release.tag_name }}"
       run: |
         docker build --build-arg APP_VERSION=$IMAGE_TAG -t $IMAGE_PATH:$IMAGE_TAG .
