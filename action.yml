@@ -39,7 +39,7 @@ runs:
         IMAGE_PATH: "${{ steps.ecr_login.outputs.registry }}/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}"
         IMAGE_TAG: "${{ github.event.release.tag_name }}"
       run: |
-        docker build --build-arg APP_VERSION=$IMAGE_TAG -t $IMAGE_PATH:$IMAGE_TAG .
+        docker build --build-arg APP_VERSION=${IMAGE_TAG} -t ${IMAGE_PATH,,}:$IMAGE_TAG .
         docker push $IMAGE_PATH:$IMAGE_TAG
       shell: bash
     - name: Notify slack
@@ -47,5 +47,5 @@ runs:
       env:
         IMAGE_NAME: "${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}"
       run: |
-        curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Release ${IMAGE_NAME} has been pushed to AWS ECR\"}" ${{ inputs.slack_webhook_url }}
+        curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Release ${IMAGE_NAME,,} has been pushed to AWS ECR\"}" ${{ inputs.slack_webhook_url }}
       shell: bash
