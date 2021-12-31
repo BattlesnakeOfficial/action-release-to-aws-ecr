@@ -10,4 +10,5 @@ runs:
         echo "${{ github.event.release.tag_name }}"
         echo "${GITHUB_REPOSITORY,,}"
         echo "${{ github.event.repository.name }}"        
+        echo "${{ github.event.repository.owner }}"        
       shell: bash
