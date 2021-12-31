@@ -53,12 +53,9 @@ runs:
         docker push $IMAGE_PATH:$IMAGE_TAG
       shell: bash
     - name: Notify slack
-      if: ${{ github.event_name == 'release' }}
+      if: ${{ github.event_name == 'release' && inputs.slack_webhook_url != '' }}
       env:
         IMAGE_NAME: "${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}"
         SLACK_WEBOOK_URL: "${{ inputs.slack_webhook_url }}"
-      run: |
-        if [[ ! -z "${SLACK_WEBHOOK_URL}" ]]; then 
-          echo "slack webhook url is set!"
-        fi
+      run: echo "slack webhook url is set! ${IMAGE_NAME}"
       shell: bash
