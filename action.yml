@@ -58,5 +58,7 @@ runs:
         IMAGE_NAME: "${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}"
         SLACK_WEBOOK_URL: "${{ inputs.slack_webhook_url }}"
       run: |
-        [[ ! -z "$SLACK_WEBHOOK_URL" ]] && echo "slack webhook url is set!"
+        if [[ ! -z "${SLACK_WEBHOOK_URL}" ]]; then 
+          echo "slack webhook url is set!"
+        fi
       shell: bash
