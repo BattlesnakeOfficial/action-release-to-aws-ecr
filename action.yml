@@ -47,3 +47,4 @@ runs:
       run: |
         docker build --build-arg APP_VERSION=$IMAGE_TAG -t $IMAGE_PATH:$IMAGE_TAG .
         docker push $IMAGE_PATH:$IMAGE_TAG
+      shell: bash
