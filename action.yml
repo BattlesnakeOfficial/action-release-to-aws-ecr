@@ -57,5 +57,6 @@ runs:
       env:
         IMAGE_NAME: "${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}"
         SLACK_WEBOOK_URL: "${{ inputs.slack_webhook_url }}"
-      run: [[ ! -z "$SLACK_WEBHOOK_URL" ]] && curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Release ${IMAGE_NAME} has been pushed to AWS ECR\"}" ${SLACK_WEBHOOK_URL}
+      run: |
+        [[ ! -z "$SLACK_WEBHOOK_URL" ]] && echo "slack webhook url is set!"
       shell: bash
