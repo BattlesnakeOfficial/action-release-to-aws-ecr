@@ -40,7 +40,7 @@ runs:
         IMAGE_TAG: "${{ github.event.release.tag_name }}"
       run: |
         docker build --build-arg APP_VERSION=${IMAGE_TAG} -t ${IMAGE_PATH,,}:$IMAGE_TAG .
-        docker push $IMAGE_PATH:$IMAGE_TAG
+        docker push ${IMAGE_PATH,,}:$IMAGE_TAG
       shell: bash
     - name: Notify slack
       if: ${{ github.event_name == 'release' && inputs.slack_webhook_url != '' }}
