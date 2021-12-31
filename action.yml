@@ -1,5 +1,17 @@
 name: "Release Docker Image to AWS ECR"
 description: "GitHub Action to build a release docker image and push it to AWS ECR."
+
+inputs:
+  aws_access_key_id:
+    description: "AWS_ACCESS_KEY_ID"
+    required: True
+  aws_secret_access_key:
+    description: "AWS_SECRET_ACCESS_KEY"
+    required: True
+  aws_region:
+    description: "AWS_REGION"
+    required: True
+
 runs:
   using: "composite"
   steps:
@@ -13,3 +25,25 @@ runs:
         echo "${{ github.event.repository.owner }}"
         echo "${{ github.event.repository.owner.login }}"
       shell: bash
+    - name: Configure AWS credentials
+      if: ${{ github.event_name == 'release' }}
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ inputs.aws_access_key_id }}
+        aws-secret-access-key: ${{ inputs.aws_secret_access_key }}
+        aws-region: ${{ inputs.aws_region }}
+    - name: Login to AWS ECR
+      if: ${{ github.event_name == 'release' }}
+      id: ecr_login
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Checkout repo
+      if: ${{ github.event_name == 'release' }}
+      uses: actions/checkout@v2
+    - name: Build docker image and push to AWS ECR
+      if: ${{ github.event_name == 'release' }}
+      env:
+        IMAGE_PATH: "${{ steps.ecr-login.outputs.registry }}/${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}"
+        IMAGE_TAG: "${{ github.event.release.tag_name }}"
+      run: |
+        docker build --build-arg APP_VERSION=$IMAGE_TAG -t $IMAGE_PATH:$IMAGE_TAG .
+        docker push $IMAGE_PATH:$IMAGE_TAG
