@@ -14,7 +14,7 @@ inputs:
   slack_webhook_url:
     description: "SLACK_WEBHOOK_URL"
     required: false
-    default: 
+    default: ""
 
 runs:
   using: "composite"
