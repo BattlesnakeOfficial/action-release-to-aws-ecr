@@ -1,0 +1,13 @@
+name: "Release Docker Image to AWS ECR"
+description: "GitHub Action to build a release docker image and push it to AWS ECR."
+runs:
+  using: "composite"
+  steps:
+    - name: "Sanity"
+      if: ${{ github.event_name == 'release' }}
+      run: |
+        echo "${GITHUB_REF#refs/tags/}"
+        echo "${{ github.event.release.tag_name }}"
+        echo "${GITHUB_REPOSITORY,,}"
+        echo "${{ github.event.repository.name }}"        
+      shell: bash
