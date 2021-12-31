@@ -4,13 +4,17 @@ description: "GitHub Action to build a release docker image and push it to AWS E
 inputs:
   aws_access_key_id:
     description: "AWS_ACCESS_KEY_ID"
-    required: True
+    required: true
   aws_secret_access_key:
     description: "AWS_SECRET_ACCESS_KEY"
-    required: True
+    required: true
   aws_region:
     description: "AWS_REGION"
-    required: True
+    required: true
+  slack_webhook_url:
+    description: "SLACK_WEBHOOK_URL"
+    required: false
+    default: 
 
 runs:
   using: "composite"
@@ -47,4 +51,11 @@ runs:
       run: |
         docker build --build-arg APP_VERSION=$IMAGE_TAG -t $IMAGE_PATH:$IMAGE_TAG .
         docker push $IMAGE_PATH:$IMAGE_TAG
+      shell: bash
+    - name: Notify slack
+      if: ${{ github.event_name == 'release' }}
+      env:
+        IMAGE_NAME: "${{ github.event.repository.owner.login }}/${{ github.event.repository.name }}:${{ github.event.release.tag_name }}"
+        SLACK_WEBOOK_URL: "${{ inputs.slack_webhook_url }}"
+      run: [[ ! -z "$SLACK_WEBHOOK_URL" ]] && curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"Release ${IMAGE_NAME} has been pushed to AWS ECR\"}" ${SLACK_WEBHOOK_URL}
       shell: bash
